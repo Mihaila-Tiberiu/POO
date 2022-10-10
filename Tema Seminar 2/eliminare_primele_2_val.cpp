@@ -5,7 +5,7 @@ using namespace std;
 void eliminaPrimele2Valori(int*& v, int& n)
 {
     // p1 se calculeaza noua dimensiune
-    int n2 = n-2;
+    int n2 = n - 2;
 
     // p2 alocare dinamica nou vector cu dimensiunea calculata la p1
     int* aux = (int*)malloc(n2 * sizeof(int));
@@ -26,25 +26,32 @@ void eliminaPrimele2Valori(int*& v, int& n)
 
 
 int main()
-{   
+{
     int n;
-    int* v; 
-   
+    int* v;
+
     cout << "n= "; cin >> n;
+    
+    if (n < 2)
+        cout << "n trebuie sa fie >= 2!";
 
-    v = (int*)malloc(n * sizeof(int));
-
-    for (int i = 0; i < n; i++)
+    else 
     {
-        cout << "v[" << i << "]= "; cin >> v[i];
+
+        v = (int*)malloc(n * sizeof(int));
+
+        for (int i = 0; i < n; i++)
+        {
+            cout << "v[" << i << "]= "; cin >> v[i];
+        }
+
+        eliminaPrimele2Valori(v, n);
+
+        for (int i = 0; i < n; i++)
+        {
+            cout << v[i] << " ";
+        }
+
+        free(v);
     }
-
-    eliminaPrimele2Valori(v, n);
-
-    for (int i = 0; i < n; i++)
-    {
-        cout << v[i] << " ";
-    }
-
-    free(v);
 }
