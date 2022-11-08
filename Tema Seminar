@@ -1,0 +1,198 @@
+#include <iostream>
+
+using namespace std;
+
+class CustomException
+{
+	string mesaj;
+public:
+	CustomException(string mesaj) : mesaj(mesaj) {}
+	string getMesaj() { return this->mesaj; }
+};
+
+// Animale Zoo
+
+class Animal
+{
+	static int nrTotalAnimale;
+	static float pretBilet;
+
+	const int idAnimal;
+	string numeSpecieAnimal = "Nedefinit";
+	int nrAnimaleSpecie = 0;
+	string* numeIndiviziSpecie = NULL;
+	int varstaIndiviziSpecie[100];
+
+public:
+	Animal(int idAnimal) : idAnimal(idAnimal)
+	{
+		cout << "Apel constructor cu un parametru" << endl;
+	}
+
+	Animal(int idAnimal, string numeSpecieAnimal, int nrAnimaleSpecie, string* numeIndiviziSpecie, int* varstaIndiviziSpecie) : idAnimal(idAnimal)
+	{
+		nrTotalAnimale = nrTotalAnimale + nrAnimaleSpecie;
+		cout << "Apel constructor cu toti parametrii" << endl;
+		this->numeSpecieAnimal = numeSpecieAnimal;
+		this->nrAnimaleSpecie = nrAnimaleSpecie;
+		if (nrAnimaleSpecie > 0)
+			this->numeIndiviziSpecie = new string[this->nrAnimaleSpecie];
+		if (numeIndiviziSpecie != NULL)
+		{
+			for (int i = 0; i < nrAnimaleSpecie; i++)
+				this->numeIndiviziSpecie[i] = numeIndiviziSpecie[i];
+		}
+		if (varstaIndiviziSpecie != NULL)
+		{
+			for (int i = 0; i < nrAnimaleSpecie; i++)
+				this->varstaIndiviziSpecie[i] = varstaIndiviziSpecie[i];
+		}
+	}
+
+	Animal(const Animal& a) : idAnimal(a.idAnimal)
+	{
+		nrTotalAnimale = nrTotalAnimale + a.nrAnimaleSpecie;
+		cout << "Apel constructor de copiere" << endl;
+		this->numeSpecieAnimal = a.numeSpecieAnimal;
+		this->nrAnimaleSpecie = a.nrAnimaleSpecie;
+		if (a.nrAnimaleSpecie > 0)
+			this->numeIndiviziSpecie = new string[this->nrAnimaleSpecie];
+		if (a.numeIndiviziSpecie != NULL)
+		{
+			for (int i = 0; i < a.nrAnimaleSpecie; i++)
+				this->numeIndiviziSpecie[i] = a.numeIndiviziSpecie[i];
+		}
+		if (a.varstaIndiviziSpecie != NULL)
+		{
+			for (int i = 0; i < a.nrAnimaleSpecie; i++)
+				this->varstaIndiviziSpecie[i] = a.varstaIndiviziSpecie[i];
+		}
+	}
+
+	~Animal()
+	{
+		cout << "Apel destructor" << endl;
+		if (this->numeIndiviziSpecie != NULL)
+			delete[] this->numeIndiviziSpecie;
+		nrTotalAnimale = nrTotalAnimale - this->nrAnimaleSpecie;
+	}
+
+	void afisare()
+	{
+		cout << "Animalul are id-ul: " << this->idAnimal << endl;
+		cout << "Numele speciei este: " << this->numeSpecieAnimal << endl;
+		cout << "Nr de animale din Zoo care fac parte din specie este: "
+			<< this->nrAnimaleSpecie << endl;
+		if (this->nrAnimaleSpecie > 0 && this->numeIndiviziSpecie != NULL && this->varstaIndiviziSpecie != NULL)
+		{
+			for (int i = 0; i < this->nrAnimaleSpecie; i++)
+				cout << this->numeIndiviziSpecie[i] << " este o " << this->numeSpecieAnimal
+				<< " si are varsta de " << this->varstaIndiviziSpecie[i] << " ani." << endl;
+		}
+	}
+
+	Animal& operator=(const Animal& a)
+	{
+		cout << "Apel operator =" << endl;
+		if (this != &a)
+		{
+			nrTotalAnimale = nrTotalAnimale + a.nrAnimaleSpecie - this->nrAnimaleSpecie;
+			this->numeSpecieAnimal = a.numeSpecieAnimal;
+			this->nrAnimaleSpecie = a.nrAnimaleSpecie;
+			if (a.nrAnimaleSpecie > 0)
+				this->numeIndiviziSpecie = new string[this->nrAnimaleSpecie];
+			if (a.numeIndiviziSpecie != NULL)
+			{
+				for (int i = 0; i < a.nrAnimaleSpecie; i++)
+					this->numeIndiviziSpecie[i] = a.numeIndiviziSpecie[i];
+			}
+			if (a.varstaIndiviziSpecie != NULL)
+			{
+				for (int i = 0; i < a.nrAnimaleSpecie; i++)
+					this->varstaIndiviziSpecie[i] = a.varstaIndiviziSpecie[i];
+			}
+		}
+		return *this;
+	}
+
+	Animal& operator+=(string animalNou)
+	{
+		Animal a = *this;
+		delete[] this->numeIndiviziSpecie;
+		this->nrAnimaleSpecie++;
+		this->numeIndiviziSpecie = new string[this->nrAnimaleSpecie];
+		for (int i = 0; i < a.nrAnimaleSpecie; i++)
+			this->numeIndiviziSpecie[i] = a.numeIndiviziSpecie[i];
+		this->numeIndiviziSpecie[this->nrAnimaleSpecie - 1] = animalNou;
+		this->varstaIndiviziSpecie[this->nrAnimaleSpecie - 1] = 0;
+		return *this;
+	}
+
+	Animal operator+(string animalNou)
+	{
+		Animal a = *this;
+		a += animalNou;
+		return a;
+	}
+
+	friend Animal operator+ (string animalNou, Animal& a)
+	{
+		return a + animalNou;
+	}
+
+	static void setPretBilet(float pret)
+	{
+		if (pret > 0)
+			pretBilet = pret;
+		else
+			throw new CustomException("Valoarea pretului nu poate fi mai mica ca 0!");
+	}
+
+	static float getPretBilet()
+	{
+		return pretBilet;
+	}
+
+	static int getNrTotalAnimale()
+	{
+		return nrTotalAnimale;
+	}
+};
+
+int Animal::nrTotalAnimale = 0;
+float Animal::pretBilet = 0;
+
+int main()
+{
+	string numeSpecie = "Maimuta";
+	string nume[2] = {"Cici", "Kiki"};
+	int varsta[2] = {1,2};
+	Animal a(1, numeSpecie, 2, nume, varsta);
+	a.afisare();
+	cout << a.getPretBilet() << endl;
+	try 
+	{
+		Animal::setPretBilet(-1);
+	}
+	catch (CustomException* ex)
+	{
+		cout << ex->getMesaj() << endl;
+	}
+	try
+	{
+		Animal::setPretBilet(25.5);
+	}
+	catch (CustomException* ex)
+	{
+		cout << ex->getMesaj() << endl;
+	}
+	cout << Animal::getPretBilet() << endl;
+	cout << Animal::getNrTotalAnimale() << endl;
+	Animal b = a;
+	b.afisare();
+	b += "Riri";
+	b = b + "Coco";
+	b = "Yoyo" + b;
+	b.afisare();
+	return 0;
+}
