@@ -1,0 +1,251 @@
+#include <iostream>
+
+using namespace std;
+
+enum TipMotorizare {
+	benzina,
+	motorina,
+	GPL,
+	electrica,
+	hibrida
+};
+
+ostream& operator << (ostream& out, const TipMotorizare& e)
+{
+	switch (e)
+	{
+	case(0): out << "benzina" << endl; break;
+	case(1): out << "motorina" << endl; break;
+	case(2): out << "GPL" << endl; break;
+	case(3): out << "electrica" << endl; break;
+	case(4): out << "hibrida" << endl; break;
+	}
+
+	return out;
+}
+
+class Autovehicul
+{
+	string marca;
+	string model;
+	float HP = 0;
+	bool cutieVitMan = 1;
+	TipMotorizare motorizare = benzina;
+	int nrRevizii = 0;
+	string* revizii = {};
+
+public:
+
+	Autovehicul(string marca, string model, float HP, bool cutieVitMan, TipMotorizare motorizare, int nrRevizii, string* revizii)
+	{
+		this->marca = marca;
+		this->model = model;
+		this->HP = HP;
+		this->cutieVitMan = cutieVitMan;
+		this->motorizare = motorizare;
+		this->nrRevizii = nrRevizii;
+
+		if (nrRevizii != 0 && revizii != NULL)
+		{
+			this->revizii = new string[nrRevizii];
+			for (int i = 0; i < nrRevizii; i++)
+			{
+				this->revizii[i] = revizii[i];
+			}
+		}
+	}
+
+	Autovehicul(const Autovehicul& a)
+	{
+		this->marca = a.marca;
+		this->model = a.model;
+		this->HP = a.HP;
+		this->cutieVitMan = a.cutieVitMan;
+		this->motorizare = a.motorizare;
+		this->nrRevizii = a.nrRevizii;
+
+		if (a.nrRevizii != 0 && a.revizii != NULL)
+		{
+			this->revizii = new string[nrRevizii];
+			for (int i = 0; i < nrRevizii; i++)
+			{
+				this->revizii[i] = a.revizii[i];
+			}
+		}
+	}
+
+	~Autovehicul()
+	{
+		if (this->revizii != NULL)
+			delete[] this->revizii;
+	}
+
+	void afisare()
+	{
+		cout << "---------" << endl;
+		cout << "Marca: " << this->marca << endl;
+		cout << "Model: " << this->model << endl;
+		cout << "Cai putere: " << this->HP << endl;
+		if (this->cutieVitMan)
+			cout << "Cutia de viteze este manuala" << endl;
+		else
+			cout << "Cutia de viteze este automata" << endl;
+		cout << "Tipul de motorizare este " << this->motorizare << endl;
+		if (this->nrRevizii <= 0 || this->revizii == NULL)
+			cout << "Autovehiculul nu are revizii" << endl;
+		else
+			for (int i = 0; i < this->nrRevizii; i++)
+				cout << "\tRevizia " << i << " a avut loc pe data de " << this->revizii[i]<<endl;
+		cout << "---------" << endl;
+	}
+
+	Autovehicul& operator = (const Autovehicul& a)
+	{
+		if (this != &a)
+		{
+			this->marca = a.marca;
+			this->model = a.model;
+			this->HP = a.HP;
+			this->cutieVitMan = a.cutieVitMan;
+			this->motorizare = a.motorizare;
+			this->nrRevizii = a.nrRevizii;
+
+			if (a.nrRevizii != 0 && a.revizii != NULL)
+			{
+				this->revizii = new string[nrRevizii];
+				for (int i = 0; i < nrRevizii; i++)
+				{
+					this->revizii[i] = a.revizii[i];
+				}
+			}
+		}
+
+		return *this;
+	}
+
+	bool operator >= (Autovehicul a)
+	{
+		return this->HP > a.HP;
+	}
+
+	string& operator[](int index)
+	{
+		if (index >= 0 && index < this->nrRevizii)
+			return this->revizii[index];
+	}
+
+	//preincrementare
+	Autovehicul& operator++()
+	{
+		this->HP++;
+		return *this;
+	}
+
+	//postincrementare
+	Autovehicul operator++(int)
+	{
+		Autovehicul copie = *this;
+		this->HP++;
+		return copie;
+	}
+
+	explicit operator float()
+	{
+		return this->HP;
+	}
+
+	explicit operator int()
+	{
+		return int(this->HP);
+	}
+
+	void operator()(int i)
+	{
+		if (i < this->nrRevizii)
+			cout << "Revizia " << i << " a avut loc pe data de" << this->revizii[i] << endl;
+		else
+			cout << "Nu exista revizia cu numarul" << i;
+	}
+
+	friend ostream& operator << (ostream& out, const Autovehicul& a)
+	{
+		out << "---------" << endl;
+		out << "Marca: " << a.marca << endl;
+		out << "Model: " << a.model << endl;
+		out << "Cai putere: " << a.HP << endl;
+		if (a.cutieVitMan)
+			out << "Cutia de viteze este manuala" << endl;
+		else
+			out << "Cutia de viteze este automata" << endl;
+		out << "Tipul de motorizare este " << a.motorizare << endl;
+		if (a.nrRevizii <= 0)
+			out << "Autovehiculul nu are revizii" << endl;
+		else
+			for (int i = 0; i < a.nrRevizii; i++)
+				out << "\tRevizia " << i << " a avut loc pe data de " << a.revizii[i] << endl;
+		out << "---------" << endl;
+		return out;
+	}
+
+	friend istream& operator >> (istream& in, Autovehicul& a)
+	{
+		if (a.nrRevizii > 0 && a.revizii != NULL)
+		{
+			delete[] a.revizii;
+		}
+		cout << "Marca = "; in >> a.marca; cout;
+		cout << "Model = "; in >> a.model; cout;
+		cout << "Cai putere = "; in >> a.HP; cout;
+		cout << "Are cutie de viteze manuala? (1=DA, 0=NU)? "; in >> a.cutieVitMan;
+		cout << "Nr revizii = "; in >> a.nrRevizii;
+		if (a.nrRevizii > 0) 
+		{
+			a.revizii = new string[a.nrRevizii];
+			for (int i = 0; i < a.nrRevizii; i++)
+			{
+				cout << "Revizie " << i << " = "; in >> a.revizii[i];
+			}
+		}
+
+		return in;
+	}
+
+};
+
+int main()
+{
+	string marca = "Dacia";
+	string model = "Duster";
+	string revizii[2] = { "01/10/2019", "02/08/2020" };
+	Autovehicul a1(marca, model, 160.2, 1, TipMotorizare::motorina, 2, revizii);
+	a1.afisare();
+	Autovehicul a2(a1);
+	a2.afisare();
+	Autovehicul a3 = a2;
+	a3.afisare();
+	if (a3 >= a2)
+		cout << "a3 >= a2";
+	else
+		cout << "a3 < a2";
+	string data = a2[1];
+	cout << "Revizia " << 1 << "a avut loc pe" << data << endl;
+	a2[1] = "01/01/1991";
+	cout << "Revizia " << 1 << "a avut loc pe" << a2[1] << endl;
+	a1 = a2++;
+	a1.afisare();
+	a2.afisare();
+	a1 = ++a2;
+	a1.afisare();
+	a2.afisare();
+	float caiPutereFloat = float(a1);
+	cout << caiPutereFloat << endl;
+	int caiPutereInt = int(a1);
+	cout << caiPutereInt << endl;
+	a1(1);
+	cout << a3;
+	cin >> a1;
+	cout << a1;
+	TipMotorizare e = TipMotorizare::GPL;
+	cout << e << endl;
+	return 0;
+}
