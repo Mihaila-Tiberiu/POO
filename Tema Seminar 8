@@ -1,0 +1,429 @@
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+class Cadou {
+private:
+	string denumire = "Anonim";
+	float pret = 0;
+
+public:
+	Cadou()
+	{
+	}
+
+	Cadou(string denumire, float pret)
+	{
+		this->denumire = denumire;
+		this->pret = pret;
+	}
+
+	Cadou(const Cadou& c)
+	{
+		this->denumire = c.denumire;
+		this->pret = c.pret;
+	}
+
+	Cadou& operator=(const Cadou& c)
+	{
+		this->denumire = c.denumire;
+		this->pret = c.pret;
+		return *this;
+	}
+
+	friend ostream& operator<<(ostream& out, const Cadou& c)
+	{
+		out << "\nDenumire: " << c.denumire << ", pret: " << c.pret;
+		return out;
+	}
+
+	friend ofstream& operator<<(ofstream& out, const Cadou& c)
+	{
+		out << "\nDenumire: " << c.denumire << ". pret: " << c.pret;
+		return out;
+	}
+
+	friend istream& operator>>(istream& in, Cadou& c)
+	{
+		cout << "Introduceti denumire: ";
+		in >> c.denumire;
+		cout << "Introduceti pret: ";
+		in >> c.pret;
+		return in;
+	}
+
+	friend ifstream& operator>>(ifstream& in, Cadou& c)
+	{
+		in >> c.denumire;
+		in >> c.pret;
+		return in;
+	}
+
+	void setDenumire(string denumireNoua)
+	{
+		this->denumire = denumireNoua;
+	}
+
+	void setPret(float pretNou)
+	{
+		this->pret = pretNou;
+	}
+
+	const string getDenumire()
+	{
+		return this->denumire;
+	}
+
+	const float getPret()
+	{
+		return this->pret;
+	}
+};
+
+
+
+
+class Wishlist2 {
+private:
+	string detinator = "Anonim";
+	int nrCadouri = 0;
+	Cadou listaCadouri[255];
+public:
+	Wishlist2() 
+	{ 
+		listaCadouri[0].setDenumire("Nedefinit"); 
+		listaCadouri[0].setPret(0);
+	}
+	Wishlist2(string detinator, int nrCadouri, Cadou* listaCadouri)
+	{
+		this->detinator = detinator;
+		this->nrCadouri = nrCadouri;
+		if (this->nrCadouri != 0 && listaCadouri != NULL)
+		{
+			for (int i = 0; i < nrCadouri; i++)
+			{
+				this->listaCadouri[i].setDenumire(listaCadouri[i].getDenumire());
+				this->listaCadouri[i].setPret(listaCadouri[i].getPret());
+			}
+		}
+	}
+	Wishlist2(Wishlist2& w)
+	{
+		this->detinator = w.detinator;
+		this->nrCadouri = w.nrCadouri;
+		if (this->nrCadouri != 0 && w.listaCadouri != NULL)
+		{
+			for (int i = 0; i < nrCadouri; i++)
+			{
+				this->listaCadouri[i].setDenumire(w.listaCadouri[i].getDenumire());
+				this->listaCadouri[i].setPret(w.listaCadouri[i].getPret());
+			}
+		}
+	}
+	~Wishlist2() {}
+
+	Wishlist2& operator= (Wishlist2& w)
+	{
+		if (this != &w) {
+			this->detinator = w.detinator;
+			this->nrCadouri = w.nrCadouri;
+			if (this->nrCadouri != 0 && w.listaCadouri != NULL)
+			{
+				for (int i = 0; i < nrCadouri; i++)
+				{
+					this->listaCadouri[i].setDenumire(w.listaCadouri[i].getDenumire());
+					this->listaCadouri[i].setPret(w.listaCadouri[i].getPret());
+				}
+			}
+		}
+		return *this;
+	}
+
+	friend ostream& operator<<(ostream& out, const Wishlist2& w)
+	{
+		out << "Detinator: " << w.detinator << endl;
+		out << "Nr cadouri: " << w.nrCadouri << endl;
+		for (int i = 0; i < w.nrCadouri; i++)
+		{
+			out << w.listaCadouri[i];
+		}
+		return out;
+	}
+
+	friend ofstream& operator<<(ofstream& out, const Wishlist2& w)
+	{
+		out << "Detinator: " << w.detinator << endl;
+		out << "Nr cadouri: " << w.nrCadouri << endl;
+		for (int i = 0; i < w.nrCadouri; i++)
+		{
+			out << w.listaCadouri[i];
+		}
+		return out;
+	}
+
+	friend istream& operator>>(istream& in, Wishlist2& w)
+	{
+		cout << "Introduceti detinator " << endl;
+		in >> w.detinator;
+		cout << "Introduceti nr de cadouri " << endl;
+		in >> w.nrCadouri;
+		for (int i = 0; i < w.nrCadouri; i++)
+		{
+			in >> w.listaCadouri[i];
+		}
+		return in;
+	}
+
+	friend ifstream& operator>>(ifstream& in, Wishlist2& w)
+	{
+		in >> w.detinator;
+		in >> w.nrCadouri;
+		for (int i = 0; i < w.nrCadouri; i++)
+		{
+			in >> w.listaCadouri[i];
+		}
+		return in;
+	}
+};
+
+
+
+
+static class Wishlist3 {
+private:
+	string detinator = "Anonim";
+	int nrCadouri = 0;
+	Cadou listaCadouri[255];
+public:
+	Wishlist3()
+	{
+		listaCadouri[0].setDenumire("Nedefinit");
+		listaCadouri[0].setPret(0);
+	}
+	Wishlist3(string detinator, int nrCadouri, Cadou* listaCadouri)
+	{
+		this->detinator = detinator;
+		this->nrCadouri = nrCadouri;
+		if (this->nrCadouri != 0 && listaCadouri != NULL)
+		{
+			for (int i = 0; i < nrCadouri; i++)
+			{
+				this->listaCadouri[i].setDenumire(listaCadouri[i].getDenumire());
+				this->listaCadouri[i].setPret(listaCadouri[i].getPret());
+			}
+		}
+	}
+	Wishlist3(Wishlist3& w) // numai in scop demonstrativ, nu are un sens logic
+	{
+		this->detinator = w.detinator;
+		this->nrCadouri = w.nrCadouri;
+		if (this->nrCadouri != 0 && w.listaCadouri != NULL)
+		{
+			for (int i = 0; i < nrCadouri; i++)
+			{
+				this->listaCadouri[i].setDenumire(w.listaCadouri[i].getDenumire());
+				this->listaCadouri[i].setPret(w.listaCadouri[i].getPret());
+			}
+		}
+	}
+	~Wishlist3(){}
+
+	Wishlist3& operator= (Wishlist3& w) // numai in scop demonstrativ, nu are un sens logic
+	{
+		if (this != &w) {
+			this->detinator = w.detinator;
+			this->nrCadouri = w.nrCadouri;
+			if (this->nrCadouri != 0 && w.listaCadouri != NULL)
+			{
+				for (int i = 0; i < nrCadouri; i++)
+				{
+					this->listaCadouri[i].setDenumire(w.listaCadouri[i].getDenumire());
+					this->listaCadouri[i].setPret(w.listaCadouri[i].getPret());
+				}
+			}
+		}
+		return *this;
+	}
+
+	friend ostream& operator<<(ostream& out, const Wishlist3& w)
+	{
+		out << "Detinator: " << w.detinator << endl;
+		out << "Nr cadouri: " << w.nrCadouri << endl;
+		for (int i = 0; i < w.nrCadouri; i++)
+		{
+			out << w.listaCadouri[i];
+		}
+		return out;
+	}
+
+	friend ofstream& operator<<(ofstream& out, const Wishlist3& w)
+	{
+		out << "Detinator: " << w.detinator << endl;
+		out << "Nr cadouri: " << w.nrCadouri << endl;
+		for (int i = 0; i < w.nrCadouri; i++)
+		{
+			out << w.listaCadouri[i];
+		}
+		return out;
+	}
+
+	friend istream& operator>>(istream& in, Wishlist3& w)
+	{
+		cout << "Introduceti detinator " << endl;
+		in >> w.detinator;
+		cout << "Introduceti nr de cadouri " << endl;
+		in >> w.nrCadouri;
+		for (int i = 0; i < w.nrCadouri; i++)
+		{
+			in >> w.listaCadouri[i];
+		}
+		return in;
+	}
+
+	friend ifstream& operator>>(ifstream& in, Wishlist3& w)
+	{
+		in >> w.detinator;
+		in >> w.nrCadouri;
+		for (int i = 0; i < w.nrCadouri; i++)
+		{
+			in >> w.listaCadouri[i];
+		}
+		return in;
+	}
+};
+
+
+
+class Wishlist4 {
+private:
+	string detinator = "Anonim";
+	int nrCadouri = 0;
+	Cadou* listaCadouri = NULL;
+public:
+	Wishlist4()
+	{
+	}
+	Wishlist4(string detinator, int nrCadouri, Cadou* listaCadouri)
+	{
+		this->detinator = detinator;
+		this->nrCadouri = nrCadouri;
+		if (this->nrCadouri != 0 && listaCadouri != NULL)
+		{
+			this->listaCadouri = new Cadou[nrCadouri];
+			for (int i = 0; i < nrCadouri; i++)
+			{
+				this->listaCadouri[i].setDenumire(listaCadouri[i].getDenumire());
+				this->listaCadouri[i].setPret(listaCadouri[i].getPret());
+			}
+		}
+	}
+	Wishlist4(Wishlist4 &w)
+	{
+		this->detinator = w.detinator;
+		this->nrCadouri = w.nrCadouri;
+		if (this->nrCadouri != 0 && w.listaCadouri != NULL)
+		{
+			this->listaCadouri = new Cadou[nrCadouri];
+			for (int i = 0; i < nrCadouri; i++)
+			{
+				this->listaCadouri[i].setDenumire(w.listaCadouri[i].getDenumire());
+				this->listaCadouri[i].setPret(w.listaCadouri[i].getPret());
+			}
+		}
+	}
+	~Wishlist4(){
+		if (this->listaCadouri != NULL)
+			delete[] this->listaCadouri;
+	}
+
+
+	Wishlist4& operator= (Wishlist4& w)
+	{
+		if (this != &w) {
+			this->detinator = w.detinator;
+			this->nrCadouri = w.nrCadouri;
+			if (this->nrCadouri != 0 && w.listaCadouri != NULL)
+			{
+				this->listaCadouri = new Cadou[nrCadouri];
+				for (int i = 0; i < nrCadouri; i++)
+				{
+					this->listaCadouri[i].setDenumire(w.listaCadouri[i].getDenumire());
+					this->listaCadouri[i].setPret(w.listaCadouri[i].getPret());
+				}
+			}
+		}
+		return *this;
+	}
+
+	friend ostream& operator<<(ostream& out, const Wishlist4& w)
+	{
+		out << "Detinator: " << w.detinator << endl;
+		out << "Nr cadouri: " << w.nrCadouri << endl;
+		for (int i = 0; i < w.nrCadouri; i++)
+		{
+			out << w.listaCadouri[i];
+		}
+		return out;
+	}
+
+	friend ofstream& operator<<(ofstream& out, const Wishlist4& w)
+	{
+		out << "Detinator: " << w.detinator << endl;
+		out << "Nr cadouri: " << w.nrCadouri << endl;
+		for (int i = 0; i < w.nrCadouri; i++)
+		{
+			out << w.listaCadouri[i];
+		}
+		return out;
+	}
+
+	friend istream& operator>>(istream& in, Wishlist4& w)
+	{
+		cout << "Introduceti detinator " << endl;
+		in >> w.detinator;
+		cout << "Introduceti nr de cadouri " << endl;
+		in >> w.nrCadouri;
+		for (int i = 0; i < w.nrCadouri; i++)
+		{
+			in >> w.listaCadouri[i];
+		}
+		return in;
+	}
+
+	friend ifstream& operator>>(ifstream& in, Wishlist4& w)
+	{
+		in >> w.detinator;
+		in >> w.nrCadouri;
+		for (int i = 0; i < w.nrCadouri; i++)
+		{
+			in >> w.listaCadouri[i];
+		}
+		return in;
+	}
+};
+
+int main()
+{
+	Cadou c1("Trenulet", 50);
+	Cadou c2("Masinuta", 20);
+	Wishlist2 w2("Andrei", 2, new Cadou[2]{c1, c2});
+	Wishlist3 w3("Alexandru", 2, new Cadou[2]{ c1, c2 });
+	Wishlist4 w4("Anamaria", 2, new Cadou[2]{ c1, c2 });
+
+	cout << w2 << endl;
+	cout << w3 << endl;
+	cout << w4 << endl;
+
+	return 0;
+}
+
+/*
+Wishlist 2 -> vector alocat static de Cadou
+Wishlist 3 -> vector static de Cadou
+Wishlist 4 -> vector alocat dinamic de Cadou
+
+
+constructori,
+operatori << si >> pt o/istream si pt 0/ifstream 
+*/
