@@ -1,0 +1,149 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Angajat
+{
+private:
+	string nume = "ANONIM";
+protected: 
+	float salariu = 0;
+public:
+	Angajat(){}
+	Angajat(string nume)
+	{
+		this->nume = nume;
+	}
+	Angajat(float salariu)
+	{
+		this->salariu = salariu;
+	}
+	Angajat(string nume, float salariu)
+	{
+		this->nume = nume;
+		this->salariu = salariu;
+	}
+	Angajat(const Angajat& a) {
+		this->nume = a.nume;
+		this->salariu = a.salariu;
+	}
+	Angajat& operator=(const Angajat& a)
+	{
+		if (this != &a)
+		{
+			this->nume = a.nume;
+			this->salariu = a.salariu;
+		}
+		return *this;
+	}
+	float getSalariul() {
+		return this->salariu;
+	}
+};
+
+class Profesor : public Angajat
+{
+public:
+	Profesor() {}
+	Profesor(Angajat a) : Angajat(a){}
+	Profesor(const Profesor& p): Angajat(p){}
+	Profesor& operator= (const Profesor& p) { 
+		if (this != &p) 
+		{
+			this->Angajat::operator=(p);
+		} 
+		return *this; 
+	}
+
+	~Profesor(){}
+};
+
+class PersonalAuxiliar : public Angajat
+{
+public:
+	PersonalAuxiliar() {}
+	PersonalAuxiliar(Angajat a) : Angajat(a){}
+	PersonalAuxiliar(const PersonalAuxiliar& p): Angajat(p){}
+	PersonalAuxiliar& operator= (const PersonalAuxiliar& p) {
+		if (this != &p)
+		{
+			this->Angajat::operator=(p);
+		}
+		return *this;
+	}
+
+	~PersonalAuxiliar(){}
+};
+
+class Facultate {
+private:
+	string denumire = "NEDEFINIT";
+	int nrProfesori = 0;
+	Profesor* profesori = NULL;
+	int nrPersonalAuxiliar = 0;
+	PersonalAuxiliar* personalulAuxiliar = NULL;
+public:
+	Facultate(){}
+	Facultate(string denumire, int nrProfesori, const Profesor* profesori,
+	int nrPersonalAuxiliar, const PersonalAuxiliar* personalulAuxiliar)
+	{
+		this->denumire = denumire;
+		if (nrProfesori > 0 && profesori != NULL)
+		{
+			this->profesori = new Profesor[nrProfesori];
+			this->nrProfesori = nrProfesori;
+			for (int i = 0; i < nrProfesori; i++)
+				this->profesori[i] = profesori[i];
+
+		}
+		if (nrPersonalAuxiliar > 0 && personalulAuxiliar != NULL)
+		{
+			this->personalulAuxiliar = new PersonalAuxiliar[nrPersonalAuxiliar];
+			this->nrPersonalAuxiliar = nrPersonalAuxiliar;
+			for (int i = 0; i < nrPersonalAuxiliar; i++)
+				this->personalulAuxiliar[i] = personalulAuxiliar[i];
+		}
+	}
+	~Facultate()
+	{
+		delete[] profesori;
+		delete[] personalulAuxiliar;
+	}
+
+	float calculNecesarSalarii()
+	{
+		float necesarSalarii = 0;
+		if (this->nrProfesori > 0 && this->profesori != NULL)
+		{
+			for (int i = 0; i < this->nrProfesori; i++)
+				necesarSalarii += this->profesori[i].getSalariul();
+		}
+		if (this->nrPersonalAuxiliar > 0 && this->personalulAuxiliar != NULL)
+		{
+			for (int i = 0; i < this->nrPersonalAuxiliar; i++)
+				necesarSalarii += this->personalulAuxiliar[i].getSalariul();
+		}
+		return necesarSalarii;
+	}
+};
+
+int main()
+{
+	Profesor p1(4.4);
+	cout << p1.getSalariul() << endl;
+	Profesor p2(3.3);
+	cout << p2.getSalariul() << endl;
+	Profesor vprof[2] = { p1, p2 };
+
+	PersonalAuxiliar pa1(1.1);
+	cout << pa1.getSalariul() << endl;
+	PersonalAuxiliar pa2(2.2);
+	cout << pa2.getSalariul() << endl;
+	PersonalAuxiliar vpers[2] = { pa1, pa2 };
+
+	string denumireFac = "Facultate Test";
+	Facultate f(denumireFac, 2, vprof, 2, vpers);
+	cout << f.calculNecesarSalarii() << endl;
+	return 0;
+}
